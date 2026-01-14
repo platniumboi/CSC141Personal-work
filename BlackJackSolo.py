@@ -38,7 +38,10 @@ def main():
                     score = score + 11
             else:
                 score = score + hand[i]
-    
+    def print_status(player):
+        for i in player:
+            print(player[i])
+        print(calculate_score(player))
  
 
 if __name__ == "__main__":
