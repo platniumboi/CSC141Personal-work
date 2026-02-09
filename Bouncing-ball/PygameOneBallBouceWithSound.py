@@ -19,9 +19,9 @@ window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 clock = pygame.time.Clock()
  
 # 4 - Load assets: image(s), sound(s),  etc.
-ballImage = pygame.image.load('images/ball.png')
-bounceSound = pygame.mixer.Sound('sounds/boing.wav')
-pygame.mixer.music.load('sounds/background.mp3')
+ballImage = pygame.image.load('Bouncing-ball/images/ball.png')
+bounceSound = pygame.mixer.Sound('Bouncing-ball/sounds/boing.wav')
+pygame.mixer.music.load('Bouncing-ball/sounds/background.mp3')
 pygame.mixer.music.play(-1, 0.0)
 
 
@@ -33,7 +33,16 @@ ballRect.left = random.randrange(MAX_WIDTH)
 ballRect.top = random.randrange(MAX_HEIGHT)
 xSpeed = N_PIXELS_PER_FRAME
 ySpeed = N_PIXELS_PER_FRAME
+SCORE = 0
+TIMER = 0
  
+def draw_text(surface, text, x, y, color, font_size=24):
+    text_font = pygame.font.SysFont(None, font_size)
+    text_surface = text_font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    text_rect.topleft = (x, y)
+    surface.blit(text_surface, text_rect)
+
 # 6 - Loop forever
 while True:
 
@@ -44,6 +53,15 @@ while True:
             # if it is quit the game
             pygame.quit()
             sys.exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if ballRect.collidepoint(pygame.mouse.get_pos()):
+                SCORE += 1
+                bounceSound.play()
+                ballRect.left = random.randrange(MAX_WIDTH)
+                ballRect.top = random.randrange(MAX_HEIGHT)
+                ballRect.left = ballRect.left + xSpeed + random.randint(-5, 5)
+                ballRect.top = ballRect.top + ySpeed + random.randint(-5, 5)
+                
     
     # 8 - Do any "per frame" actions
     if (ballRect.left < 0) or (ballRect.right >= WINDOW_WIDTH):
@@ -54,15 +72,29 @@ while True:
         ySpeed = -ySpeed  # reverse Y direction
         bounceSound.play()
 
+    if pygame.time.get_ticks() - TIMER > 1000:  # every second
+        TIMER = pygame.time.get_ticks()
+
+    if SCORE >= 5:
+        window.fill(BLACK)
+        draw_text(window, 'You win!', 250, 200, (255, 255, 0), font_size=50)
+        draw_text (window, f"Time: {TIMER // 1000} seconds", 250, 260, (255, 255, 255), font_size=30)
+        pygame.display.update()
+        pygame.time.wait(3000)  # Wait for 3 seconds before quitting
+        pygame.quit()
+        sys.exit()
+
     # Update the rectangle of the ball, based on the speed in two directions
     ballRect.left = ballRect.left + xSpeed
-    ballRect.top = ballRect.top + ySpeed
+    ballRect.top = ballRect.top + ySpeed 
 
     # 9 - Clear the window before drawing it again
     window.fill(BLACK)
     
     # 10 - Draw the window elements
     window.blit(ballImage, ballRect)
+
+    draw_text(window, f'Score: {SCORE}', 10, 10, (255, 255, 255), font_size=30)
 
     # 11 - Update the window
     pygame.display.update()
