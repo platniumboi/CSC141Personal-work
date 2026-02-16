@@ -80,6 +80,7 @@ while True:
         pygame.time.wait(3000)
         pygame.quit()
         sys.exit()
+        ballList = []
     # 12 - Slow things down a bit
     clock.tick(FRAMES_PER_SECOND)  # make pygame wait
 
