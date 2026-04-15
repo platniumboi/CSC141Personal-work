@@ -31,18 +31,16 @@ while True:
 
     # 7 - Check for and handle events
     for event in pygame.event.get():
-        
-
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
 
     # 8 - Do any "per frame" actions
-   
-   
 
     # 9 - Clear the window before drawing it again
     window.fill(BLACK)  # draw a background image
-                          
+
     # 10 - Draw the window elements
-   
 
     # 11 - Update the window
     pygame.display.update()
